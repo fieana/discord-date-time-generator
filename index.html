@@ -27,31 +27,47 @@
 			}
 			body {
 				font-family: "Open Sans", sans-serif;
+				background: #f2f2f2;
 			}
 			code {
 				background: rgba(0, 0, 0, 0.1);
 				padding: 0.25rem 0.5rem;
 				display: inline-block;
-				white-space: nowrap;
+				cursor: pointer;
+				transition: background 0.2s;
+			}
+			code:hover {
+				background: rgba(255, 255, 255, 0.5);
 			}
 			button {
 				cursor: pointer;
 			}
+			th {
+				padding: 0.25rem 0.5rem;
+				border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+			}
 			td {
 				padding: 0.25rem 0.5rem;
-				cursor: pointer;
+				border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+				transition: background 0.2s;
 			}
 			tr:hover td {
 				background: #ffe5e3;
 			}
-			tr:active td {
+			tr:active td,
+			tr.active td {
 				background: #b0ffb4;
+			}
+			tr th:first-child,
+			tr td:first-child {
+				text-align: center;
+				white-space: nowrap;
 			}
 			#clipboard {
 				font-family: monospace;
 			}
 			.content {
-				max-width: 600px;
+				max-width: 768px;
 			}
 			.background-box {
 				background: rgba(0, 0, 0, 0.05);
@@ -61,97 +77,74 @@
 				word-wrap: normal;
 				padding: 0.25rem 0.5rem;
 				border-radius: 0.25rem;
+				margin: 0.25rem 0;
 			}
 		</style>
 	</head>
 	<body>
-		<div class="d-flex justify-content-center mt-5">
+		<div class="d-flex justify-content-center mt-3">
 			<div class="content p-3">
 				<div class="h2 text-center">Discord Date Time Generator</div>
-				<div class="background-box p-3 mb-3">
+				<div class="background-box p-3 mb-3 text-center">
 					<p>
 						Put your preferred date and time below, to get your very own Discord
 						timestamp for messages!
 					</p>
-					<div class="form">
-						<div
-							class="d-flex flex-wrap align-items-center justify-content-center mb-3"
-						>
-							<div
-								class="btn-group mx-2"
-								role="group"
-								aria-label="Basic radio toggle button group"
-							>
-								<input
-									class="btn-check"
-									autocomplete="off"
-									type="radio"
-									id="dropdownRadio"
-									name="formType"
-									value="dropdown"
-									checked
-									onclick="formTypeChange()"
-								/>
-								<label class="btn btn-outline-primary" for="dropdownRadio"
-									>Dropdown</label
-								>
-								<input
-									class="btn-check"
-									autocomplete="off"
-									type="radio"
-									id="manualRadio"
-									name="formType"
-									value="manual"
-									onclick="formTypeChange()"
-								/>
-								<label class="btn btn-outline-primary" for="manualRadio"
-									>Manual</label
-								>
-							</div>
-							<div class="vr"></div>
-							<button
-								id="reset"
-								type="button"
-								class="btn btn-primary mx-2"
-								onclick="reset()"
-							>
-								RESET
-							</button>
-						</div>
-					</div>
-					<div id="dropdownContainer" class="d-flex flex-wrap justify-content-center">
+					<div
+						id="dropdownContainer"
+						class="
+							d-flex
+							flex-column flex-sm-row flex-wrap
+							align-items-center
+							justify-content-center
+						"
+					>
 						<div class="px-2">
-							<select id="daySelect" onchange="selectUpdateResult()"></select>
+							<select
+								id="daySelect"
+								onchange="selectUpdateResult()"
+								autofocus
+							></select>
 							<select id="monthSelect" onchange="selectUpdateResult()"></select>
 							<select id="yearSelect" onchange="selectUpdateResult()"></select>
 						</div>
-						<div class="vr"></div>
+						<div><div class="vr d-none d-sm-inline-block"></div></div>
 						<div class="px-2">
 							<select id="hoursSelect" onchange="selectUpdateResult()"></select>
 							:
 							<select id="minutesSelect" onchange="selectUpdateResult()"></select>
+							<select id="ampmSelect" onchange="selectUpdateResult()"></select>
+							<select id="tzSelect" onchange="selectUpdateResult()"></select>
 						</div>
+						<div><div class="vr d-none d-sm-inline-block"></div></div>
+						<button
+							id="reset"
+							type="button"
+							class="btn btn-primary mx-2 my-1"
+							onclick="reset()"
+						>
+							RESET
+						</button>
 					</div>
-					<div id="manualContainer">
-						<div>
-							<input id="dayInput" type="number" min="1" max="31" maxlength="2" />
-						</div>
-						<div>:</div>
-					</div>
-					<div></div>
 				</div>
 				<div class="result">
-					<div class="d-md-flex mb-3 align-items-center">
+					<div class="d-sm-flex mb-3 align-items-center">
 						<div class="pe-3">Copied to clipboard:</div>
 						<div class="col">
-							<input class="w-100" type="text" readonly id="clipboard" />
+							<input
+								class="w-100"
+								type="text"
+								readonly
+								id="clipboard"
+								placeholder="Select the options below"
+							/>
 						</div>
 					</div>
 					<table id="newDateDiv" class="w-100 mb-4">
 						<thead>
 							<tr>
-								<th>How it will appear:</th>
-								<th width="1">Copy, and paste this:</th>
+								<th width="1">Select a format</th>
+								<th>How it will appear</th>
 							</tr>
 						</thead>
 						<tbody id="newDateDivBody"></tbody>
@@ -161,8 +154,12 @@
 					<p class="small text-center">
 						Discord Date Time Generator is in no way affilated, or associated with
 						Discord Inc.<br />
-						This is simply a fun project I put together to make it easier for Discord
-						users to input Unix timestamps for events.
+						&copy; Fieana 2021
+						<a
+							href="https://github.com/fieana/discord-date-time-generator"
+							class="fab fa-github text-black"
+							target="_blank"
+						></a>
 					</p>
 				</div>
 			</div>
@@ -179,6 +176,7 @@
 			referrerpolicy="no-referrer"
 		></script>
 		<script type="text/javascript">
+			let copyId = null
 			let formType = "dropdown"
 			let newDate = moment()
 			let newDateDiv = document.getElementById("newDateDivBody")
@@ -196,7 +194,6 @@
 						con.classList.remove("d-flex")
 						con.classList.add("d-none")
 					}
-					console.dir(radios[i].checked)
 				}
 			}
 			function setFormType() {}
@@ -207,6 +204,10 @@
 			function dayChange(date) {
 				if (!date) date = moment()
 				daySelect.innerHTML = ""
+				let title = document.createElement("option")
+				title.setAttribute("disabled", "disabled")
+				title.innerText = "Day"
+				daySelect.appendChild(title)
 				for (i = 1; i <= 31; i++) {
 					let o = document.createElement("option")
 					o.setAttribute("value", i)
@@ -251,6 +252,10 @@
 			function monthChange(date) {
 				if (!date) date = moment()
 				monthSelect.innerHTML = ""
+				let title = document.createElement("option")
+				title.setAttribute("disabled", "disabled")
+				title.innerText = "Mth"
+				monthSelect.appendChild(title)
 				for (i = 0; i < 12; i++) {
 					let o = document.createElement("option")
 					o.setAttribute("value", i)
@@ -267,6 +272,10 @@
 				if (!date) date = moment()
 				let nowYear = date.year()
 				yearSelect.innerHTML = ""
+				let title = document.createElement("option")
+				title.setAttribute("disabled", "disabled")
+				title.innerText = "Year"
+				yearSelect.appendChild(title)
 				for (i = nowYear - 10; i <= nowYear + 20; i++) {
 					let o = document.createElement("option")
 					o.setAttribute("value", i)
@@ -283,11 +292,21 @@
 			function hoursChange(date) {
 				if (!date) date = moment()
 				hoursSelect.innerHTML = ""
-				for (i = 0; i < 24; i++) {
+				let title = document.createElement("option")
+				title.setAttribute("disabled", "disabled")
+				title.innerText = "HH"
+				hoursSelect.appendChild(title)
+
+				for (i = 1; i <= 12; i++) {
 					let o = document.createElement("option")
 					o.setAttribute("value", i)
 					o.innerText = i < 10 ? "0" + i : i
-					if (i == date.hour()) o.setAttribute("selected", "selected")
+					if (
+						i == date.hour() % 12 ||
+						(i == 12 && date.hour() == 12) ||
+						(i == 12 && date.hour() == 0)
+					)
+						o.setAttribute("selected", "selected")
 					else o.removeAttribute("selected")
 					hoursSelect.appendChild(o)
 				}
@@ -298,6 +317,10 @@
 			function minutesChange(date) {
 				if (!date) date = moment()
 				minutesSelect.innerHTML = ""
+				let title = document.createElement("option")
+				title.setAttribute("disabled", "disabled")
+				title.innerText = "MM"
+				minutesSelect.appendChild(title)
 				for (i = 0; i < 60; i++) {
 					let o = document.createElement("option")
 					o.setAttribute("value", i)
@@ -307,42 +330,111 @@
 					minutesSelect.appendChild(o)
 				}
 			}
+			//ampm
+			let ampmSelect = document.getElementById("ampmSelect")
+			ampmChange()
+			function ampmChange(date) {
+				if (!date) date = moment()
+				let arr = ["AM", "PM"]
+				ampmSelect.innerHTML = ""
+				for (i = 0; i < arr.length; i++) {
+					let o = document.createElement("option")
+					o.setAttribute("value", arr[i])
+					o.innerText = arr[i]
+					if (date.hour() > 12 && i == 1) o.setAttribute("selected", "selected")
+					else o.removeAttribute("selected")
+					ampmSelect.appendChild(o)
+				}
+			}
+			//tz
+			let tzSelect = document.getElementById("tzSelect")
+			tzChange()
+			function tzChange(date) {
+				if (!date) date = moment()
+				let arr = [
+					-720, -660, -600, -570, -540, -480, -420, -360, -300, -240, -210, -180, -120,
+					-60, 0, 60, 120, 180, 210, 240, 270, 300, 330, 345, 360, 390, 420, 480, 525,
+					540, 570, 600, 630, 660, 720, 765, 780, 840,
+				]
+				tzSelect.innerHTML = ""
+				let title = document.createElement("option")
+				title.setAttribute("disabled", "disabled")
+				title.innerText = "UTC"
+				tzSelect.appendChild(title)
+				for (i = 0; i < arr.length; i++) {
+					let o = document.createElement("option")
+					o.setAttribute("value", arr[i])
+					let h = Math.floor(arr[i] / 60)
+					let m = Math.abs(arr[i] % 60)
+					o.innerText = h < 0 ? "-" : "+"
+					o.innerText += Math.abs(h) < 10 ? "0" + Math.abs(h) : Math.abs(h)
+					o.innerText += ":"
+					o.innerText += m < 10 ? "0" + m : m
+					if (arr[i] == date.utcOffset()) o.setAttribute("selected", "selected")
+					else o.removeAttribute("selected")
+					tzSelect.appendChild(o)
+				}
+			}
 
 			function selectUpdateResult(reset) {
 				if (!reset) {
 					newDate.date(daySelect.value)
 					newDate.month(monthSelect.value)
 					newDate.year(yearSelect.value)
-					newDate.hour(hoursSelect.value)
+					newDate.hour(
+						ampmSelect.value == "PM" && hoursSelect.value < 12
+							? Number(hoursSelect.value) + 12
+							: ampmSelect.value == "AM" && hoursSelect.value == 12
+							? 0
+							: hoursSelect.value
+					)
 					newDate.minute(minutesSelect.value)
+					newDate.utcOffset(Number(tzSelect.value))
 				}
 				dayChange(newDate)
 				monthChange(newDate)
 				yearChange(newDate)
 				hoursChange(newDate)
 				minutesChange(newDate)
+				ampmChange(newDate)
+				tzChange(newDate)
 
 				newDateDiv.innerHTML = ""
-				newDateDiv.appendChild(createDiscordDate(":d", `DD/MM/YYYY`)) // 10/18/2021
-				newDateDiv.appendChild(createDiscordDate(":f", `MMMM D, YYYY h:mm A`)) // October 18, 2021 9:00 PM
-				newDateDiv.appendChild(createDiscordDate(":F", `dddd, MMMM D, YYYY h:mm A`)) // Monday, October 18, 2021 9:00 PM
-				newDateDiv.appendChild(createDiscordDate(":D", `MMMM D, YYYY`)) // October 18, 2021
-				newDateDiv.appendChild(createDiscordDate(":t", `h:mm A`)) // 9:00 PM
-				newDateDiv.appendChild(createDiscordDate(":T", `h:m:ss A`)) // 9:00:00 PM
-				newDateDiv.appendChild(createDiscordDate(":R", `DD/MM/YYYY`)) // 2 months ago
+				newDateDiv.appendChild(createDiscordDate("dc3", ":F", `dddd, MMMM D, YYYY h:mm A`)) // Monday, October 18, 2021 9:00 PM
+				newDateDiv.appendChild(createDiscordDate("dc2", ":f", `MMMM D, YYYY h:mm A`)) // October 18, 2021 9:00 PM
+				newDateDiv.appendChild(createDiscordDate("dc4", ":D", `MMMM D, YYYY`)) // October 18, 2021
+				newDateDiv.appendChild(createDiscordDate("dc1", ":d", `DD/MM/YYYY`)) // 10/18/2021
+				newDateDiv.appendChild(createDiscordDate("dc6", ":T", `h:mm:ss A`)) // 9:00:00 PM
+				newDateDiv.appendChild(createDiscordDate("dc5", ":t", `h:mm A`)) // 9:00 PM
+				newDateDiv.appendChild(createDiscordDate("dc7", ":R", ``)) // 2 months ago
+				newDateDiv.appendChild(createDiscordDate("dc8", "ts", ``)) // timestamp
+				console.log(newDate.utcOffset())
 			}
-			function createDiscordDate(type, format) {
+			function createDiscordDate(id, type, format) {
 				let tr = document.createElement("tr")
+				tr.setAttribute("id", id)
 				tr.classList.add("discord-date")
 				let dd = `<t:${getTimestamp()}${type}>`
-				tr.innerHTML = `<td>${
-					type == ":R" ? newDate.fromNow() : newDate.format(format)
-				}</td><td><code>${dd
-					.replace("<", "&lt;")
-					.replace(">", "&gt;")} <i class="fas fa-copy"></i></code></td>`
+				let newText = type == "ts" ? getTimestamp() : dd
+				tr.innerHTML = ""
+				let td1 = document.createElement("td")
+				let code = document.createElement("code")
+				code.classList.add("w-100")
+				code.innerText = newText
+				td1.appendChild(code)
+				tr.appendChild(td1)
+				let td2 = document.createElement("td")
+				td2.innerText = type == ":R" ? newDate.fromNow() : type == "ts" ? getTimestamp() : newDate.format(format)
+				tr.appendChild(td2)
 				let clipboard = document.getElementById("clipboard")
-				tr.onclick = function () {
-					clipboard.setAttribute("value", dd)
+				code.onclick = function () {
+					if (copyId) {
+						let prevCopy = document.getElementById(copyId)
+						prevCopy.classList.remove("active")
+					}
+					copyId = id
+					tr.classList.add("active")
+					clipboard.setAttribute("value", newText)
 					clipboard.select()
 					clipboard.setSelectionRange(0, 99999)
 					navigator.clipboard.writeText(clipboard.value)
