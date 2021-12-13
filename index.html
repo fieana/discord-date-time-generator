@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Discord Date Time Generator</title>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+			integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		/>
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+			crossorigin="anonymous"
+		/>
+		<style>
+			* {
+				box-sizing: border-box;
+			}
+			body {
+				font-family: "Open Sans", sans-serif;
+			}
+			code {
+				background: rgba(0, 0, 0, 0.1);
+				padding: 0.25rem 0.5rem;
+				display: inline-block;
+				white-space: nowrap;
+			}
+			button {
+				cursor: pointer;
+			}
+			td {
+				padding: 0.25rem 0.5rem;
+				cursor: pointer;
+			}
+			tr:hover td {
+				background: #ffe5e3;
+			}
+			tr:active td {
+				background: #b0ffb4;
+			}
+			#clipboard {
+				font-family: monospace;
+			}
+			.content {
+				max-width: 600px;
+			}
+			.background-box {
+				background: rgba(0, 0, 0, 0.05);
+				border-radius: 1rem;
+			}
+			select {
+				word-wrap: normal;
+				padding: 0.25rem 0.5rem;
+				border-radius: 0.25rem;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="d-flex justify-content-center mt-5">
+			<div class="content p-3">
+				<div class="h2 text-center">Discord Date Time Generator</div>
+				<div class="background-box p-3 mb-3">
+					<p>
+						Put your preferred date and time below, to get your very own Discord
+						timestamp for messages!
+					</p>
+					<div class="form">
+						<div
+							class="d-flex flex-wrap align-items-center justify-content-center mb-3"
+						>
+							<div
+								class="btn-group mx-2"
+								role="group"
+								aria-label="Basic radio toggle button group"
+							>
+								<input
+									class="btn-check"
+									autocomplete="off"
+									type="radio"
+									id="dropdownRadio"
+									name="formType"
+									value="dropdown"
+									checked
+									onclick="formTypeChange()"
+								/>
+								<label class="btn btn-outline-primary" for="dropdownRadio"
+									>Dropdown</label
+								>
+								<input
+									class="btn-check"
+									autocomplete="off"
+									type="radio"
+									id="manualRadio"
+									name="formType"
+									value="manual"
+									onclick="formTypeChange()"
+								/>
+								<label class="btn btn-outline-primary" for="manualRadio"
+									>Manual</label
+								>
+							</div>
+							<div class="vr"></div>
+							<button
+								id="reset"
+								type="button"
+								class="btn btn-primary mx-2"
+								onclick="reset()"
+							>
+								RESET
+							</button>
+						</div>
+					</div>
+					<div id="dropdownContainer" class="d-flex flex-wrap justify-content-center">
+						<div class="px-2">
+							<select id="daySelect" onchange="selectUpdateResult()"></select>
+							<select id="monthSelect" onchange="selectUpdateResult()"></select>
+							<select id="yearSelect" onchange="selectUpdateResult()"></select>
+						</div>
+						<div class="vr"></div>
+						<div class="px-2">
+							<select id="hoursSelect" onchange="selectUpdateResult()"></select>
+							:
+							<select id="minutesSelect" onchange="selectUpdateResult()"></select>
+						</div>
+					</div>
+					<div id="manualContainer">
+						<div>
+							<input id="dayInput" type="number" min="1" max="31" maxlength="2" />
+						</div>
+						<div>:</div>
+					</div>
+					<div></div>
+				</div>
+				<div class="result">
+					<div class="d-md-flex mb-3 align-items-center">
+						<div class="pe-3">Copied to clipboard:</div>
+						<div class="col">
+							<input class="w-100" type="text" readonly id="clipboard" />
+						</div>
+					</div>
+					<table id="newDateDiv" class="w-100 mb-4">
+						<thead>
+							<tr>
+								<th>How it will appear:</th>
+								<th width="1">Copy, and paste this:</th>
+							</tr>
+						</thead>
+						<tbody id="newDateDivBody"></tbody>
+					</table>
+				</div>
+				<div>
+					<p class="small text-center">
+						Discord Date Time Generator is in no way affilated, or associated with
+						Discord Inc.<br />
+						This is simply a fun project I put together to make it easier for Discord
+						users to input Unix timestamps for events.
+					</p>
+				</div>
+			</div>
+		</div>
+		<script
+			src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+			crossorigin="anonymous"
+		></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
+			integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		></script>
+		<script type="text/javascript">
+			let formType = "dropdown"
+			let newDate = moment()
+			let newDateDiv = document.getElementById("newDateDivBody")
+			formTypeChange()
+			function formTypeChange() {
+				var radios = document.getElementsByName("formType")
+				for (let i = 0; i < radios.length; i++) {
+					let id = radios[i].getAttribute("id").replace("Radio", "")
+					let con = document.getElementById(id + "Container")
+					if (radios[i].checked) {
+						con.classList.add("d-flex")
+						con.classList.remove("d-none")
+						formType = id
+					} else {
+						con.classList.remove("d-flex")
+						con.classList.add("d-none")
+					}
+					console.dir(radios[i].checked)
+				}
+			}
+			function setFormType() {}
+
+			// day
+			let daySelect = document.getElementById("daySelect")
+			dayChange()
+			function dayChange(date) {
+				if (!date) date = moment()
+				daySelect.innerHTML = ""
+				for (i = 1; i <= 31; i++) {
+					let o = document.createElement("option")
+					o.setAttribute("value", i)
+					o.innerText = i
+					if (i == date.date()) o.setAttribute("selected", "selected")
+					else o.removeAttribute("selected")
+					daySelect.appendChild(o)
+				}
+			}
+
+			//month
+			let monthSelect = document.getElementById("monthSelect")
+			let monthsArr = [
+				"Jan",
+				"Feb",
+				"Mar",
+				"Apr",
+				"May",
+				"Jun",
+				"Jul",
+				"Aug",
+				"Sep",
+				"Oct",
+				"Nov",
+				"Dec",
+			]
+			let fullMonthsArr = [
+				"January",
+				"February",
+				"March",
+				"April",
+				"May",
+				"June",
+				"July",
+				"August",
+				"September",
+				"October",
+				"November",
+				"December",
+			]
+			monthChange()
+			function monthChange(date) {
+				if (!date) date = moment()
+				monthSelect.innerHTML = ""
+				for (i = 0; i < 12; i++) {
+					let o = document.createElement("option")
+					o.setAttribute("value", i)
+					o.innerText = monthsArr[i]
+					if (i == date.month()) o.setAttribute("selected", "selected")
+					monthSelect.appendChild(o)
+				}
+			}
+
+			// year
+			let yearSelect = document.getElementById("yearSelect")
+			yearChange()
+			function yearChange(date) {
+				if (!date) date = moment()
+				let nowYear = date.year()
+				yearSelect.innerHTML = ""
+				for (i = nowYear - 10; i <= nowYear + 20; i++) {
+					let o = document.createElement("option")
+					o.setAttribute("value", i)
+					o.innerText = i
+					if (i == date.year()) o.setAttribute("selected", "selected")
+					else o.removeAttribute("selected")
+					yearSelect.appendChild(o)
+				}
+			}
+
+			// hours
+			let hoursSelect = document.getElementById("hoursSelect")
+			hoursChange()
+			function hoursChange(date) {
+				if (!date) date = moment()
+				hoursSelect.innerHTML = ""
+				for (i = 0; i < 24; i++) {
+					let o = document.createElement("option")
+					o.setAttribute("value", i)
+					o.innerText = i < 10 ? "0" + i : i
+					if (i == date.hour()) o.setAttribute("selected", "selected")
+					else o.removeAttribute("selected")
+					hoursSelect.appendChild(o)
+				}
+			}
+			//minutes
+			let minutesSelect = document.getElementById("minutesSelect")
+			minutesChange()
+			function minutesChange(date) {
+				if (!date) date = moment()
+				minutesSelect.innerHTML = ""
+				for (i = 0; i < 60; i++) {
+					let o = document.createElement("option")
+					o.setAttribute("value", i)
+					o.innerText = i < 10 ? "0" + i : i
+					if (i == date.minute()) o.setAttribute("selected", "selected")
+					else o.removeAttribute("selected")
+					minutesSelect.appendChild(o)
+				}
+			}
+
+			function selectUpdateResult(reset) {
+				if (!reset) {
+					newDate.date(daySelect.value)
+					newDate.month(monthSelect.value)
+					newDate.year(yearSelect.value)
+					newDate.hour(hoursSelect.value)
+					newDate.minute(minutesSelect.value)
+				}
+				dayChange(newDate)
+				monthChange(newDate)
+				yearChange(newDate)
+				hoursChange(newDate)
+				minutesChange(newDate)
+
+				newDateDiv.innerHTML = ""
+				newDateDiv.appendChild(createDiscordDate(":d", `DD/MM/YYYY`)) // 10/18/2021
+				newDateDiv.appendChild(createDiscordDate(":f", `MMMM D, YYYY h:mm A`)) // October 18, 2021 9:00 PM
+				newDateDiv.appendChild(createDiscordDate(":F", `dddd, MMMM D, YYYY h:mm A`)) // Monday, October 18, 2021 9:00 PM
+				newDateDiv.appendChild(createDiscordDate(":D", `MMMM D, YYYY`)) // October 18, 2021
+				newDateDiv.appendChild(createDiscordDate(":t", `h:mm A`)) // 9:00 PM
+				newDateDiv.appendChild(createDiscordDate(":T", `h:m:ss A`)) // 9:00:00 PM
+				newDateDiv.appendChild(createDiscordDate(":R", `DD/MM/YYYY`)) // 2 months ago
+			}
+			function createDiscordDate(type, format) {
+				let tr = document.createElement("tr")
+				tr.classList.add("discord-date")
+				let dd = `<t:${getTimestamp()}${type}>`
+				tr.innerHTML = `<td>${
+					type == ":R" ? newDate.fromNow() : newDate.format(format)
+				}</td><td><code>${dd
+					.replace("<", "&lt;")
+					.replace(">", "&gt;")} <i class="fas fa-copy"></i></code></td>`
+				let clipboard = document.getElementById("clipboard")
+				tr.onclick = function () {
+					clipboard.setAttribute("value", dd)
+					clipboard.select()
+					clipboard.setSelectionRange(0, 99999)
+					navigator.clipboard.writeText(clipboard.value)
+				}
+				return tr
+			}
+			function getTimestamp() {
+				return newDate.unix()
+			}
+			function reset() {
+				newDate = moment()
+				newDate.second(0)
+				newDate.millisecond(0)
+				selectUpdateResult(true)
+			}
+			reset()
+		</script>
+	</body>
+</html>
