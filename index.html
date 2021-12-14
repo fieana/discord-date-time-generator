@@ -202,7 +202,6 @@
 					}
 				}
 			}
-			function setFormType() {}
 
 			// day
 			let daySelect = document.getElementById("daySelect")
@@ -414,7 +413,6 @@
 				newDateDiv.appendChild(createDiscordDate("dc5", ":t", `h:mm A`)) // 9:00 PM
 				newDateDiv.appendChild(createDiscordDate("dc7", ":R", ``)) // 2 months ago
 				newDateDiv.appendChild(createDiscordDate("dc8", "ts", ``)) // timestamp
-				console.log(newDate.utcOffset())
 			}
 			function createDiscordDate(id, type, format) {
 				let tr = document.createElement("tr")
