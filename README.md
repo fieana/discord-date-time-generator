@@ -1,4 +1,7 @@
 # Discord Date Time Generator
 A simple tool to generate Discord's timezone in messages.
 
-![image](https://user-images.githubusercontent.com/15645000/145906892-8095638a-d016-461f-bcad-8c3827ae3c92.png)
+Demo: [https://fieana.com/discord-datetime/](https://fieana.com/discord-datetime/)
+
+![image](https://user-images.githubusercontent.com/15645000/145996816-d94ada3e-cfa8-45ed-a38a-c01aac160460.png)
+
