@@ -346,7 +346,8 @@
 					let o = document.createElement("option")
 					o.setAttribute("value", arr[i])
 					o.innerText = arr[i]
-					if (date.hour() > 12 && i == 1) o.setAttribute("selected", "selected")
+					console.log(date.hour())
+					if (date.hour() >= 12 && i == 1) o.setAttribute("selected", "selected")
 					else o.removeAttribute("selected")
 					ampmSelect.appendChild(o)
 				}
